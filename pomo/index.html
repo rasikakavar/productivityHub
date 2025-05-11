@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pomodoroApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            transition: background 0.5s ease;
+        }
+        .pomodoro { background-color: #C84C4C; } /* Pomodoro Mode */
+        .short-break { background-color: #4C88A2; } /* Short Break Mode */
+        .long-break { background-color: #3F6C91; } /* Long Break Mode */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 10px 20px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .header .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .header .menu {
+            display: flex;
+            gap: 10px;
+        }
+        .menu button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 14px;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .timer {
+            font-size: 96px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        button {
+            font-size: 20px;
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        /* Mode Buttons */
+        .mode-btns button {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: white;
+            font-weight: 600;
+            margin: 5px;
+            padding: 5px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .mode-btns .active {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 5px 15px;
+
+            .popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    width: 80%;
+    height: 80%;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    padding: 20px;
+}
+
+.popup iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #ff5c5c;
+}
+
+.close-btn:hover {
+    color: red;
+}
+        }
+    </style>
+</head>
+<body ng-controller="PomodoroController" ng-class="mode">
+    <div class="header">
+        <div class="logo"> Pomofocus ✔</div>
+        <div class="menu">
+            <button onclick="openPopup('http://localhost/pomo/report.html')">📊 Report</button>
+            <button>⚙️ Setting</button>
+            <button>🔑 Sign In</button>
+        </div>
+    </div>
+    <!-- Popup Container -->
+    <div id="popup-container" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <iframe id="popup-iframe"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openPopup(page) {
+            document.getElementById("popup-iframe").src = page;
+            document.getElementById("popup-container").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup-container").style.display = "none";
+            document.getElementById("popup-iframe").src = "";
+        }
+    </script>
+    <div class="container">
+        <div class="mode-btns">
+            <button ng-class="{'active': mode === 'pomodoro'}" ng-click="setTimer(25, 'pomodoro')">Pomodoro</button>
+            <button ng-class="{'active': mode === 'short-break'}" ng-click="setTimer(5, 'short-break')">Short Break</button>
+            <button ng-class="{'active': mode === 'long-break'}" ng-click="setTimer(15, 'long-break')">Long Break</button>
+        </div>
+        <div class="timer">{{ minutes }}:{{ seconds < 10 ? '0' + seconds : seconds }}</div>
+        <button class="start" ng-style="{'color': textColor}" ng-click="startTimer()">START</button>
+    </div>
+    <script>
+        var app = angular.module("pomodoroApp", []);
+        app.controller("PomodoroController", function($scope, $interval) {
+            let timer;
+            $scope.mode = "pomodoro"; // Default mode
+            $scope.minutes = 25;
+            $scope.seconds = 0;
+            $scope.running = false;
+
+            // Define text color for START button
+            const modeColors = {
+                'pomodoro': '#C84C4C',
+                'short-break': '#4C88A2',
+                'long-break': '#3F6C91'
+            };
+
+            $scope.textColor = modeColors[$scope.mode];
+
+            function updateTimer() {
+                if ($scope.seconds === 0) {
+                    if ($scope.minutes === 0) {
+                        $interval.cancel(timer);
+                        $scope.running = false;
+                        alert("Time's up!");
+                        return;
+                    }
+                    $scope.minutes--;
+                    $scope.seconds = 59;
+                } else {
+                    $scope.seconds--;
+                }
+            }
+
+            $scope.startTimer = function() {
+                if (!$scope.running) {
+                    timer = $interval(updateTimer, 1000);
+                    $scope.running = true;
+                }
+            };
+
+            $scope.setTimer = function(min, mode) {
+                $interval.cancel(timer);
+                $scope.running = false;
+                $scope.minutes = min;
+                $scope.seconds = 0;
+                $scope.mode = mode; // Change background color & active button
+                $scope.textColor = modeColors[mode]; // Update button text color
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="todoApp">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="TodoController as vm">
+    <div class="container">
+        <h1>ToDo App</h1>
+        <h2></h2>
+
+        <!-- Form to add a new task -->
+        <form ng-submit="vm.addTask()">
+            <input type="text" ng-model="vm.newTask.name" placeholder="Task Name" required><br><br>
+            <input type="date" ng-model="vm.newTask.date" placeholder="dd-mm-yyyy" required>
+            <input type="text" ng-model="vm.newTask.tag" placeholder="Tag">
+            <button type="submit">Add Task</button>
+        </form>
+
+        <!-- Filter tasks by tag -->
+        <div>
+            <label>Filter By Tags:</label>
+            <select ng-model="vm.selectedTag">
+                <option value="">Show All</option>
+                <option ng-repeat="tag in vm.tags" value="{{tag}}">{{tag}}</option>
+            </select>
+        </div>
+
+        <!-- List of tasks -->
+        <ul>
+            <li ng-repeat="task in vm.tasks | filter:vm.filterTasksByTag">
+                <!-- Display task details -->
+                <span ng-class="{ 'completed': task.completed }">
+                    {{task.name}} - {{task.date | date:'dd-MM-yyyy'}} 
+                    <span ng-if="task.tag">({{task.tag}})</span>
+                </span>
+
+                <!-- Edit button -->
+                <button ng-click="vm.editTask(task)">Edit</button>
+
+                <!-- Delete button -->
+                <button ng-click="vm.deleteTask(task)">Delete</button>
+
+                <!-- Mark as completed button -->
+                <button ng-click="vm.toggleCompleted(task)">
+                    {{ task.completed ? 'Undo' : 'Complete' }}
+                </button>
+            </li>
+        </ul>
+
+        <!-- Edit task form (visible only when editing) -->
+        <div ng-if="vm.editingTask">
+            <h3>Edit Task</h3>
+            <form ng-submit="vm.saveTask()">
+                <input type="text" ng-model="vm.editingTask.name" placeholder="Task Name" required><br><br>
+                <input type="date" ng-model="vm.editingTask.date" placeholder="dd-mm-yyyy" required>
+                <input type="text" ng-model="vm.editingTask.tag" placeholder="Tag">
+                <button type="submit">Save</button>
+                <button type="button" ng-click="vm.cancelEdit()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

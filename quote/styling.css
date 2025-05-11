@@ -1,0 +1,98 @@
+/* General Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #ffb6c1, #ff4d94);
+    text-align: center;
+    padding: 20px;
+    color: white;
+    transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+/* Container */
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Quote Styling */
+.quote-box {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.quote-text {
+    font-size: 22px;
+    font-style: italic;
+    color: white;
+}
+
+.quote-author {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Buttons */
+button, .btn-twitter {
+    background: #ff4d94;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 5px;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover, .btn-twitter:hover {
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.4);
+}
+
+/* Copy Message */
+.copy-message {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ✅ Dark Mode Styling */
+.dark-mode {
+    background: #1e1e1e;
+    color: white;
+}
+
+.dark-mode .quote-box {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode button, .dark-mode .btn-twitter {
+    background: #444;
+    color: white;
+}
+
+.dark-mode button:hover, .dark-mode .btn-twitter:hover {
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

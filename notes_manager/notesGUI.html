@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Manager</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="notesStyle.css">
+
+</head>
+<body>
+    <div ng-app="noteApp" ng-controller="noteCtrl" class="container">
+
+        <h1>Notes Manager</h1>
+
+        <!-- Add / Edit Note Form -->
+        <input type="hidden" ng-model="noteid">
+        <input type="text" ng-model="title" placeholder="Title">
+        <br>
+        <textarea ng-model="content" placeholder="Start writing..."></textarea>
+        <br>
+        <input type="text" ng-model="tags" placeholder="Tags">
+        <br>
+        <button ng-click="saveNote()"> Save Note </button>
+
+        <!--ajun inputs add kru shkto -->
+
+
+        <!-- All Notes will be displayed here -->
+        <div class="note-container">
+            <div class="note-card" ng-repeat="n in notes">
+                <h2>{{ n.title }}</h2>
+                <p>{{ n.content }}</p>
+                <small> {{ n.tags}} </small>
+                <br>
+                <button ng-click="editNote(n)">Open</button>
+                <button ng-click="deleteNote(n.noteid)">Delete</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var app = angular.module('noteApp', []);
+        app.controller('noteCtrl', function ($scope, $http) {
+
+            function loadNotes() {
+                $http.get("http://localhost/productivityHub/notes_manager/fetchNote.php")
+                    .then(function (response) {
+                        $scope.notes = response.data;
+                    });
+            }
+            
+            loadNotes();
+
+            // Save or Update Note
+            $scope.saveNote = function () {
+                if ($scope.noteid) {  // Update Note 📝 
+                    $http.put("http://localhost/productivityHub/notes_manager/fetchNote.php", {
+                        noteid: $scope.noteid,
+                        title: $scope.title,
+                        content: $scope.content,
+                        tags: $scope.tags
+                    }).then(function (response) {
+                        alert("Updated Successfully!");
+                        loadNotes();
+                        $scope.resetForm();
+                    });
+                } 
+                
+                
+                else {  // Add new note 📝
+                    $http.post("http://localhost/productivityHub/notes_manager/fetchNote.php", {
+                        title: $scope.title,
+                        content: $scope.content,
+                        tags: $scope.tags
+                    }).then(function (response) {
+                        alert("Saved!");
+                        loadNotes();
+                        $scope.resetForm();
+                    });
+                }
+            };
+
+
+            // Edit Note
+            $scope.editNote = function (nt) {
+                $scope.noteid = nt.noteid;
+                $scope.title = nt.title;
+                $scope.content = nt.content;
+                $scope.tags = nt.tags;
+
+                // Scroll to the top smoothly after 100ms
+                setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                    }, 100);
+
+            };
+
+            
+            // Delete Note
+            $scope.deleteNote = function (id) {
+                if (confirm("Are you sure?")) {
+                    $http({
+                        method: 'DELETE',
+                        url: "http://localhost/productivityHub/notes_manager/fetchNote.php",
+                        data: { id: id },
+                        headers: { "Content-Type": "application/json;charset=utf-8" }
+                    }).then(function (response) {
+                        alert("Note Deleted!");
+                        loadNotes();
+                    });
+                }
+            };
+
+            // Reset Form
+            $scope.resetForm = function () {
+                $scope.noteid = "";
+                $scope.title = "";
+                $scope.content = "";
+                $scope.tags = "";
+            };
+                
+        
+        });
+    </script>
+</body>
+</html>

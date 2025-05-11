@@ -1,0 +1,41 @@
+<!-- Report Section -->
+<div class="report-container" id="reportSection" style="display: none;">
+    <div class="report-header">
+        <h2>Activity Summary</h2>
+        <button class="close-btn" onclick="document.getElementById('reportSection').style.display='none'">✖</button>
+    </div>
+    <div class="stats">
+        <div class="stat-box">
+            <h3>12</h3>
+            <p>Days Accessed</p>
+        </div>
+        <div class="stat-box">
+            <h3>15h</h3>
+            <p>Hours Focused</p>
+        </div>
+        <div class="stat-box">
+            <h3>7🔥</h3>
+            <p>Day Streak</p>
+        </div>
+    </div>
+    <h3>Focus Streak</h3>
+    <div class="streak-calendar">
+        <!-- Dummy Streak Calendar (LeetCode style) -->
+        <script>
+            let streakContainer = document.querySelector(".streak-calendar");
+            for (let i = 0; i < 30; i++) {
+                let day = document.createElement("div");
+                day.classList.add("day");
+                if (Math.random() > 0.5) day.classList.add("active-day"); 
+                streakContainer.appendChild(day);
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Script to Show Report on Button Click -->
+<script>
+    function showReport() {
+        document.getElementById("reportSection").style.display = "block";
+    }
+</script>

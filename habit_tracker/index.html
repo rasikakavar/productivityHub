@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="habitTrackerApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="HabitController">
+    <div class="container">
+        <!-- Sidebar for Habit Selection -->
+        <div class="sidebar">
+            <h2>My Habits</h2>
+            <div class="habit-list">
+                <div class="habit" ng-repeat="(index, habit) in habits">
+                    <span ng-click="selectHabit(habit)" ng-class="{active: habit.name === selectedHabit.name}">
+                        {{ habit.name }}
+                    </span>
+                    <button ng-click="deleteHabit(index)" class="delete-btn">X</button>
+                </div>
+            </div>
+
+            <!-- Add Habit -->
+            <div class="add-habit">
+                <input type="text" ng-model="newHabit.name" placeholder="Habit Name">
+                <input type="color" ng-model="newHabit.color">
+                <button ng-click="addHabit()">Add Habit</button>
+            </div>
+        </div>
+
+        <!-- Habit Tracking Grid -->
+        <div class="main">
+            <h2 ng-if="selectedHabit.name">Tracking: {{ selectedHabit.name }}</h2>
+            <div ng-if="selectedHabit.name" class="month-grid">
+                <div class="month" ng-repeat="month in selectedHabit.streak">
+                    <h3>{{ month.name }}</h3>
+                    <div class="days">
+                        <div class="day" 
+                             ng-repeat="(index, day) in month.streak" 
+                             ng-click="toggleDay(day)"
+                             ng-style="{'background-color': day.marked ? selectedHabit.color : '#f0f0f0'}">
+                            {{ index + 1 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p ng-if="!selectedHabit.name">Select a habit to start tracking!</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

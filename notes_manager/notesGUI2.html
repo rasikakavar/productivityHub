@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Manager</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/pv9vyvlde443r5kh2b3eg2xeih9nc50j6xkhugl03ar8bg4g/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <link rel="stylesheet" href="notesStyle.css">
+    <script>
+        // Initialize TinyMCE Editor with advanced features
+        tinymce.init({
+            selector: '#noteEditor',
+            //plugins: 'lists emoticons bold italic underline alignleft aligncenter alignright forecolor backcolor ',
+            plugins :'emoticons',
+            toolbar: 'bold italic underline | alignleft aligncenter alignright | forecolor backcolor | numlist bullist | emoticons ',
+            menubar: false,
+            autosave_interval: "30s",
+            setup: function(editor) {
+                editor.on('input', function() {
+                    localStorage.setItem('draft', editor.getContent());
+                });
+            }
+        });
+    </script>
+
+</head>
+<body>
+    <div ng-app="noteApp" ng-controller="noteCtrl" class="container">
+
+        <h1>Notes Manager</h1>
+        <!-- Search Box -->
+        <div class="search-container">
+            <input type="text" ng-model="searchQuery" placeholder="Search Notes...">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+            
+            
+            <button id="exportBtn" ng-show="selectedNote" ng-click="exportToPDF(selectedNote)">📄 Export to PDF</button>
+            <button class="save-btn" ng-click="saveNote()">Save</button>
+            <button class="sort-btn" ng-click="toggleSort()">Sort 🔄</button>
+        </div>
+
+        <!-- Add / Edit Note Form -->
+        <input type="hidden" ng-model="noteid">
+        <input type="text" id="title" ng-model="title" placeholder="Title">
+        <br>
+        
+        <!-- Rich Text Editor (TinyMCE) -->
+        <textarea id="noteEditor"></textarea>
+        <br>
+
+        <input type="text" ng-model="tags" placeholder="Tags">
+        <br>
+        
+        <!--ajun inputs add kru shkto -->
+
+        <!-- All Notes will be displayed here -->
+        <div class="note-container">
+            <div class="note-card" ng-repeat="n in notes">
+                <h2>{{ n.title }}</h2>
+                <p>{{ n.content | stripHtml | replaceNbsp |trustAsHtml}}</p><!-- To display formatted content -->
+                <small> {{n.tags}} </small>
+                <br>
+                <button ng-click="editNote(n)">Open</button>
+                <button ng-click="deleteNote(n.noteid)">Delete</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Angular Script starts here ------------------------------------------------------------->
+    <script>
+        var app = angular.module('noteApp', []);
+        
+        // Allow AngularJS to handle HTML content safely
+        app.filter('trustAsHtml', ['$sce', function($sce) {
+            return function(text) {
+                return $sce.trustAsHtml(text);
+            };
+        }]);
+
+        app.filter('stripHtml', function () {
+            return function (text) {
+                return text ? text.replace(/<[^>]+>/gm, '') : ''; // Removes HTML tags
+            };
+        });
+
+        app.filter('replaceNbsp', function() {
+            return function(text) {
+                return text.replace(/&nbsp;/g, ' ');
+            };
+        });
+
+        app.controller('noteCtrl', function ($scope, $http) {
+
+            function loadNotes() {
+                $http.get("http://localhost/notes_manager/fetchNote.php")
+                    .then(function (response) {
+                        $scope.notes = response.data;
+                    });
+            }
+            
+            loadNotes();
+
+            // Save or Update Note
+            $scope.saveNote = function () {
+                let formattedContent = tinymce.get("noteEditor").getContent();  // Get rich text content
+
+                if ($scope.noteid) {  // Update Note 📝 
+                    $http.put("http://localhost/notes_manager/fetchNote.php", {
+                        noteid: $scope.noteid,
+                        title: $scope.title,
+                        content: formattedContent,  // Store formatted content
+                        tags: $scope.tags
+                    }).then(function (response) {
+                        alert("Updated Successfully!");
+                        loadNotes();
+                        $scope.resetForm();
+                    });
+                } 
+                
+                else {  // Add new note 📝
+                    $http.post("http://localhost/notes_manager/fetchNote.php", {
+                        title: $scope.title,
+                        content: formattedContent,  // Store formatted content
+                        tags: $scope.tags
+                    }).then(function (response) {
+                        alert("Saved!");
+                        loadNotes();
+                        $scope.resetForm();
+                    });
+                }
+            };
+
+            // Edit Note
+            $scope.editNote = function (nt) {
+            $scope.noteid = nt.noteid;
+            $scope.title = nt.title;
+            tinymce.get("noteEditor").setContent(nt.content);  // Load formatted content into editor
+            $scope.tags = nt.tags;
+            
+            $scope.selectedNote = nt; // Store the selected note
+
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }, 100);
+            };
+            // Delete Note
+            $scope.deleteNote = function (id) {
+                if (confirm("Are you sure?")) {
+                    $http({
+                        method: 'DELETE',
+                        url: "http://localhost/notes_manager/fetchNote.php",
+                        data: { id: id },
+                        headers: { "Content-Type": "application/json;charset=utf-8" }
+                    }).then(function (response) {
+                        alert("Note Deleted!");
+                        loadNotes();
+                        $scope.resetForm();
+                    });
+                }
+            };
+
+            // Reset Form
+            $scope.resetForm = function () {
+                $scope.noteid = "";
+                $scope.title = "";
+                tinymce.get("noteEditor").setContent("");  // Clear editor
+                $scope.tags = "";
+            };
+            
+            $scope.exportToPDF = function (note) {
+                if (!note || !note.title) {
+                    alert("No note selected for export!");
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                let doc = new jsPDF();
+
+                doc.setFontSize(16);
+                doc.text(note.title, 10, 10); // Title at the top
+
+                let content = note.content.replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags  
+
+                let pageWidth = doc.internal.pageSize.getWidth();
+                let margin = 10;
+                let maxWidth = pageWidth - margin * 2;
+                let lineHeight = 8;
+                let y = 20;
+
+                let splitText = doc.splitTextToSize(content, maxWidth); // Wrap text properly
+                splitText.forEach(line => {
+                    if (y + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+                        doc.addPage();
+                        y = 20; 
+                    }
+                    doc.text(line, margin, y);
+                    y += lineHeight;
+                });
+
+                doc.save(note.title + ".pdf");
+            };
+
+
+            $scope.toggleSort = function () {
+            $scope.sortOrder = !$scope.sortOrder;
+
+            setTimeout(() => {
+                let firstNote = document.querySelector(".note-card"); // Select the first note
+                if (firstNote) {
+                    firstNote.scrollIntoView({ behavior: "smooth", block: "start" });
+                     }
+                }, 100);
+            };
+
+        
+        });
+    </script>
+    
+</html>

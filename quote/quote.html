@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="quoteApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Quote Generator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="quoteApp.js"></script>
+    <link rel="stylesheet" href="styling.css">
+</head>
+<body ng-controller="QuoteController" ng-class="{ 'dark-mode': isDarkMode }">
+
+    <div class="container">
+        <h1>🌟 Daily Motivation 🌟</h1>
+
+        <div class="quote-box">
+            <p class="quote-text">"{{ randomQuote.text }}"</p>
+            <p class="quote-author">- {{ randomQuote.author }}</p>
+        </div>
+
+        <button class="btn-refresh" ng-click="generateQuote()">New Quote</button>
+        <button class="btn-copy" ng-click="copyQuote()">Copy Quote</button>
+        
+        <a href="https://twitter.com/intent/tweet?text={{ randomQuote.text }} - {{ randomQuote.author }}" 
+           target="_blank" class="btn-twitter">Share on Twitter</a>
+
+        <button class="btn-theme" ng-click="toggleTheme()">🌙 Toggle Dark Mode</button>
+        
+        <p class="copy-message" ng-show="copied">✅ Quote copied!</p>
+    </div>
+
+</body>
+</html>

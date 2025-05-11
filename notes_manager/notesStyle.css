@@ -1,0 +1,141 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 60%;
+    margin: auto;
+    padding: 10px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    color: #333;
+}
+
+/* Search Input (Standalone) */
+.search-container {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.search-container input {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+} 
+.action-bar {
+    display: flex;
+    justify-content: flex-end; /* Push buttons to the right */
+    gap: 10px; /* Space between buttons */
+    margin-bottom: 10px;
+}
+/* Input fields */
+input, textarea, button {
+    width: 96%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Title Input */
+#title {
+    font-weight: bold;
+}
+
+/* Textarea */
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+/* Buttons */
+button {
+    background-color: #76c893;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #5aaf7b;
+    transform: scale(1.05);
+}
+
+/* Notes Container */
+.note-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Note Cards */
+.note-card {
+    background: #f4f9f4;
+    border-left: 5px solid #76c893;
+    padding: 15px;
+    margin: 12px;
+    width: 40%;
+    text-align: left;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.note-card:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Note Content */
+.note-card h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.note-card p {
+    color: #555;
+}
+
+/* Small text (Tags) */
+small {
+    display: inline-block;
+    background-color: #e0eaf5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #2c3e50;
+}
+
+/* Buttons inside Note Cards */
+.note-card button {
+    width: 45%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.note-card button:first-child {
+    background-color: #9376c9;
+}
+
+.note-card button:first-child:hover {
+    background-color: #7d5ea3;
+}
+
+.note-card button:last-child {
+    background-color: #e74c3c;
+}
+
+.note-card button:last-child:hover {
+    background-color: #c0392b;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>Productivity Hub</h2>
+        <ul>
+            <li onclick="openPopup('http://localhost/productivityHub/todo/index.html')">📋 To-Do List</li>
+            <li onclick="openPopup('http://localhost/productivityHub/habit_tracker/index.html')">📅 Habit Tracker</li>
+            <li onclick="openPopup('http://localhost/productivityHub/pomo/index.html')">⏳ Pomodoro Timer</li>
+            <li onclick="openPopup('http://localhost/productivityHub/notes_manager/notesGUI2.html')">📝 Notes Manager</li>
+            <li onclick="openPopup('http://localhost/productivityHub/quote/quote.html')">💡 Daily Quote</li>
+            <li onclick="openPopup('http://localhost/productivityHub/breathing.html')">🌬️ Let's Breath </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <h1>Welcome to Productivity Hub</h1>
+        <p>Boost your productivity with smart tools.</p>
+    </div>
+
+    <!-- Popup Container -->
+    <div id="popup-container" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <iframe id="popup-iframe"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openPopup(page) {
+            document.getElementById("popup-iframe").src = page;
+            document.getElementById("popup-container").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup-container").style.display = "none";
+            document.getElementById("popup-iframe").src = "";
+        }
+    </script>
+
+</body>
+</html>
