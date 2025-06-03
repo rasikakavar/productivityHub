@@ -10,3 +10,11 @@ This project combines multiple productivity tools into one seamless experience:
 
 Built using HTML, CSS, JavaScript, Angular, mysql, and php  this project is ideal for personal use and can also serve as a strong portfolio piece showcasing front-end development skills.
 
+![Screenshot (95)](https://github.com/user-attachments/assets/d99900ec-cf50-40a7-ac78-471c537eeb18)
+![Screenshot (96)](https://github.com/user-attachments/assets/a34b9d05-0d15-4da1-bc46-8330055d8d05)
+![Screenshot (97)](https://github.com/user-attachments/assets/47608faf-349f-47f0-8e5f-8edae293918a)
+![Screenshot (98)](https://github.com/user-attachments/assets/218c041a-e619-4dd4-bc30-534479935465)
+![Screenshot (99)](https://github.com/user-attachments/assets/0199998a-bc4e-410c-90f4-99a7f1dfefa7)
+![Screenshot (100)](https://github.com/user-attachments/assets/9ad75a72-bbeb-4af6-b6e3-64a0934a95ce)
+![Screenshot (101)](https://github.com/user-attachments/assets/ffd9422e-f80b-4360-b642-e4436757f45b)
+
