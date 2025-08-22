@@ -38,3 +38,12 @@ Productivity Dashboard :
 
 ![Screenshot (101)](https://github.com/user-attachments/assets/ffd9422e-f80b-4360-b642-e4436757f45b)
 
+Database : 
+Habits 
+![habitDB](https://github.com/user-attachments/assets/c4796169-f479-4509-a2a4-f68c3abb421b)
+
+Notes 
+![notesDB](https://github.com/user-attachments/assets/1e8c8a20-225a-45e7-9f6a-bb19f116d197)
+
+
+
